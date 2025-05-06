@@ -56,7 +56,9 @@ class WebsocketBase(Client):
     :meta private:
     """
 
-    def __init__(self: Self, url: str) -> None:
+    def __init__(
+        self: Self, url: str, headers: Optional[Dict[str, str]] = None
+    ) -> None:
         """
         Initializes a websocket client.
 
@@ -71,7 +73,7 @@ class WebsocketBase(Client):
         # will initialize a new event loop when it opens the connection, so for
         # that client the initializer cannot create the queue
         self._messages: Optional[_MESSAGES_TYPE] = None
-        super().__init__(url)
+        super().__init__(url, headers=headers)
 
     def is_open(self: Self) -> bool:
         """
@@ -90,7 +92,9 @@ class WebsocketBase(Client):
     async def _do_open(self: Self) -> None:
         """Connects the client to the Web Socket API at its URL."""
         # open the connection
-        self._websocket = await websocket_client.connect(self.url)
+        self._websocket = await websocket_client.connect(
+            self.url, extra_headers=self.headers
+        )
 
         # make a message queue
         self._messages = asyncio.Queue()

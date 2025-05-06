@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Dict
 
 from typing_extensions import Final, Self
 
@@ -24,7 +24,11 @@ class Client(ABC):
     :meta private:
     """
 
-    def __init__(self: Self, url: str) -> None:
+    def __init__(
+        self: Self,
+        url: str,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> None:
         """
         Initializes a client.
 
@@ -34,6 +38,7 @@ class Client(ABC):
         self.url = url
         self.network_id: Optional[int] = None
         self.build_version: Optional[str] = None
+        self.headers = headers or {}
 
     @abstractmethod
     async def _request_impl(
